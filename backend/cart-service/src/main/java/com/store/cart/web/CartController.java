@@ -20,20 +20,20 @@ public class CartController {
 
     private Cart getOrCreate(String email) {
         return repo.findByUserEmail(email).orElseGet(() -> {
-            var c = new Cart(); c.setUserEmail(email); return repo.save(c);
+            Cart c = new Cart(); c.setUserEmail(email); return repo.save(c);
         });
     }
 
     @GetMapping
-    public Cart getCart(@AuthenticationPrincipal UserDetails user) {
-        return getOrCreate(user.getUsername());
+    public Cart getCart(@AuthenticationPrincipal(expression = "subject") String email) {
+        return getOrCreate(email);
     }
 
     public record AddItemRequest(Long productId, String productName, String imageUrl, BigDecimal price, @Min(1) Integer quantity){}
 
     @PostMapping("/items")
-    public Cart addItem(@AuthenticationPrincipal UserDetails user, @RequestBody AddItemRequest req) {
-        var cart = getOrCreate(user.getUsername());
+    public Cart addItem(@AuthenticationPrincipal(expression = "subject") String email, @RequestBody AddItemRequest req) {
+        Cart cart = getOrCreate(email);
         // si ya existe el producto en el carrito, sumar cantidad
         var existing = cart.getItems().stream().filter(i -> i.getProductId().equals(req.productId())).findFirst();
         if (existing.isPresent()) {
@@ -53,8 +53,8 @@ public class CartController {
     }
 
     @PutMapping("/items/{itemId}")
-    public ResponseEntity<Cart> updateQty(@AuthenticationPrincipal UserDetails user, @PathVariable Long itemId, @RequestBody Map<String, Integer> body) {
-        var cart = getOrCreate(user.getUsername());
+    public ResponseEntity<Cart> updateQty(@AuthenticationPrincipal(expression = "subject") String email, @PathVariable Long itemId, @RequestBody Map<String, Integer> body) {
+        Cart cart = getOrCreate(email);
         var opt = cart.getItems().stream().filter(i -> i.getId().equals(itemId)).findFirst();
         if (opt.isEmpty()) return ResponseEntity.notFound().build();
         var item = opt.get();
@@ -64,8 +64,8 @@ public class CartController {
     }
 
     @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<?> remove(@AuthenticationPrincipal UserDetails user, @PathVariable Long itemId) {
-        var cart = getOrCreate(user.getUsername());
+    public ResponseEntity<?> remove(@AuthenticationPrincipal(expression = "subject") String email, @PathVariable Long itemId) {
+        Cart cart = getOrCreate(email);
         boolean removed = cart.getItems().removeIf(i -> i.getId().equals(itemId));
         if (!removed) return ResponseEntity.notFound().build();
         repo.save(cart);
@@ -73,8 +73,8 @@ public class CartController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> clear(@AuthenticationPrincipal UserDetails user) {
-        var cart = getOrCreate(user.getUsername());
+    public ResponseEntity<?> clear(@AuthenticationPrincipal(expression = "subject") String email) {
+        Cart cart = getOrCreate(email);
         cart.getItems().clear();
         repo.save(cart);
         return ResponseEntity.noContent().build();

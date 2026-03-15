@@ -26,12 +26,12 @@ export default function Login({ onLogin }) {
       <h2>Login</h2>
       <form onSubmit={submit} style={{maxWidth:400}}>
         <div className="field"><label>Email</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></div>
-        <div className="field"><label>Contraseña</label><input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></div>
+        <div className="field"><label>Contrasena</label><input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></div>
         {error && <p style={{color:'crimson'}}>{error}</p>}
         <button className="btn">Entrar</button>
       </form>
-      <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p>
-      <p><Link to="/password-reset">¿Olvidaste tu contraseña?</Link></p>
+      <p>No tienes cuenta? <Link to="/register">Registrate</Link></p>
+      <p><Link to="/password-reset">Olvidaste tu contrasena?</Link></p>
     </div>
   )
 }

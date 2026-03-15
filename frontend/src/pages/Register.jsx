@@ -24,12 +24,12 @@ export default function Register(){
           <div className="field" style={{flex:1}}><label>Nombres</label><input name="firstName" value={form.firstName} onChange={onChange} required/></div>
           <div className="field" style={{flex:1}}><label>Apellidos</label><input name="lastName" value={form.lastName} onChange={onChange} required/></div>
         </div>
-        <div className="field"><label>Dirección de envío</label><textarea name="shippingAddress" value={form.shippingAddress} onChange={onChange} required/></div>
+        <div className="field"><label>Direccion de envio</label><textarea name="shippingAddress" value={form.shippingAddress} onChange={onChange} required/></div>
         <div className="row">
           <div className="field" style={{flex:1}}><label>Email</label><input type="email" name="email" value={form.email} onChange={onChange} required/></div>
           <div className="field" style={{flex:1}}><label>Fecha de nacimiento</label><input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={onChange} required/></div>
         </div>
-        <div className="field"><label>Contraseña</label><input type="password" name="password" value={form.password} onChange={onChange} required/></div>
+        <div className="field"><label>Contrasena</label><input type="password" name="password" value={form.password} onChange={onChange} required/></div>
         {error && <p style={{color:'crimson'}}>{error}</p>}
         {ok && <p style={{color:'green'}}>{ok}</p>}
         <button className="btn">Crear cuenta</button>
@@ -37,4 +37,3 @@ export default function Register(){
     </div>
   )
 }
-
