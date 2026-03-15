@@ -1,0 +1,3 @@
+com\store\ai\AiServiceApplication.class
+com\store\ai\web\AiController.class
+com\store\ai\config\CorsConfig.class
