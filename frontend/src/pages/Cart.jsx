@@ -13,7 +13,10 @@ export default function Cart(){
   const { notify } = useToast()
   const nav = useNavigate()
   useEffect(()=>{ cartCtx.load() }, [])
-  const remove = async (id)=>{ await cartCtx.removeItem(id); notify('Item eliminado', 'info') }
+  const remove = async (id)=>{
+    if (!confirm('Eliminar este item del carrito?')) return
+    await cartCtx.removeItem(id); notify('Item eliminado', 'info')
+  }
   const updateQty = async (id, quantity)=>{
     if(!quantity || quantity < 1){ setQErr(prev=> ({...prev, [id]:'Min 1'})); return }
     setQErr(prev=> ({...prev, [id]:''}))

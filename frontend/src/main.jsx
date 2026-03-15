@@ -7,6 +7,7 @@ import CartProvider from './contexts/CartContext.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import MiniCart from './components/MiniCart.jsx'
 import ChatWidget from './components/ChatWidget.jsx'
+import ScrollTop from './components/ScrollTop.jsx'
 import './styles.css'
 
 createRoot(document.getElementById('root')).render(
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
             <App />
             <MiniCart />
             <ChatWidget />
+            <ScrollTop />
           </ErrorBoundary>
         </CartProvider>
       </ToastProvider>
