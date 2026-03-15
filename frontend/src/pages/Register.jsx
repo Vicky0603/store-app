@@ -32,7 +32,7 @@ export default function Register(){
   }
   const submit = async (e)=>{
     e.preventDefault(); setError('')
-    // client-side validation
+    /** client-side validation */
     const errs = {}
     if(!isEmail(form.email)) errs.email = 'Email invalido'
     if(!minLength(form.password, 6)) errs.password = 'Minimo 6 caracteres'
@@ -52,17 +52,17 @@ export default function Register(){
   return (
     <div>
       <h2>Registro</h2>
-      <form onSubmit={submit} style={{maxWidth:560}}>
+      <form onSubmit={submit} style={{maxWidth:560}} autoComplete="off">
         <div className="row">
           <FormField label="Nombres" error={fieldErrors.firstName}><input name="firstName" value={form.firstName} onChange={onChange} required/></FormField>
           <FormField label="Apellidos" error={fieldErrors.lastName}><input name="lastName" value={form.lastName} onChange={onChange} required/></FormField>
         </div>
         <FormField label="Direccion de envio" error={fieldErrors.shippingAddress}><textarea name="shippingAddress" value={form.shippingAddress} onChange={onChange} required/></FormField>
         <div className="row">
-          <FormField label="Email" error={fieldErrors.email}><input type="email" name="email" value={form.email} onChange={onChange} required/></FormField>
+          <FormField label="Email" error={fieldErrors.email}><input type="email" name="user_email" autoComplete="email" value={form.email} onChange={onChange} required/></FormField>
           <FormField label="Fecha de nacimiento" error={fieldErrors.dateOfBirth}><input type="date" name="dateOfBirth" value={form.dateOfBirth} onChange={onChange} required/></FormField>
         </div>
-        <FormField label="Contrasena" error={fieldErrors.password}><input type="password" name="password" value={form.password} onChange={onChange} required/></FormField>
+        <FormField label="Contrasena" error={fieldErrors.password}><input type="password" name="user_password" autoComplete="new-password" data-lpignore="true" data-1p-ignore="true" value={form.password} onChange={onChange} required/></FormField>
         {error && <p className="error">{error}</p>}
         <Button loading={loading}>Crear cuenta</Button>
       </form>

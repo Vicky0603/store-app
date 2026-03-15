@@ -1,11 +1,28 @@
 import { useEffect, useState } from 'react'
 import { orderApi } from '../services/api.js'
+import { useLocation } from 'react-router-dom'
 
 export default function Orders(){
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
-  const load = async ()=>{ setLoading(true); const {data}= await orderApi.list(); setList(data); setLoading(false) }
+  const location = useLocation()
+  const load = async ()=>{
+    setLoading(true)
+    try {
+      const {data}= await orderApi.list()
+      const arr = Array.isArray(data) ? data : (Array.isArray(data?.content) ? data.content : [])
+      setList(arr)
+    } catch {
+      setList([])
+    } finally { setLoading(false) }
+  }
   useEffect(()=>{ load() }, [])
+  useEffect(()=>{ load() }, [location.key, location.search])
+  useEffect(()=>{
+    const handler = ()=> load()
+    window.addEventListener('order-confirmed', handler)
+    return ()=> window.removeEventListener('order-confirmed', handler)
+  }, [])
   return (
     <div>
       <h2>Mis ordenes</h2>
@@ -20,7 +37,7 @@ export default function Orders(){
           ))}
         </div>
       )}
-      {list.map(o=> (
+      {(Array.isArray(list) ? list : []).map(o=> (
         <div key={o.id} className="card" style={{padding:'.75rem'}}>
           <div className="row" style={{justifyContent:'space-between'}}>
             <strong>Orden #{o.orderNumber}</strong>
