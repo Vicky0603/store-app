@@ -43,6 +43,11 @@ Cómo ejecutar (resumen):
 Ramas:
 - Cree la rama `APP-{Nombre}` y empuje el código a un repositorio GitLab público para la demo.
 
+CI/CD
+- GitHub Actions: workflow en `.github/workflows/ci.yml` ejecuta tests y build en backend (Java 17 + Maven) y frontend (Node 18, ESLint, Vitest, build).
+- GitLab CI: pipeline en `.gitlab-ci.yml` con stages `test` y `build` para backend y frontend.
+- Lint/format frontend: `npm run lint` y `npm run format`.
+
 **Mejoras y Detalles Implementados**
 - Backend robusto
   - Seguridad JWT: `user-service` emite tokens; `catalog/cart/order` validan con OAuth2 Resource Server (NimbusJwtDecoder) y CORS habilitado.
