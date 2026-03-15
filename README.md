@@ -41,3 +41,9 @@ Cómo ejecutar (resumen):
 
 Ramas:
 - Cree la rama `APP-{Nombre}` y empuje el código a un repositorio GitLab público para la demo.
+
+<img width="1913" height="787" alt="image" src="https://github.com/user-attachments/assets/8c32a636-429d-499f-9a14-822d5226b559" />
+<img width="1490" height="877" alt="image" src="https://github.com/user-attachments/assets/92f4bf3c-1080-4962-bc34-e4916e7c3145" />
+
+
+
