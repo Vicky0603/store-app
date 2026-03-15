@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import { cartApi, orderApi, userApi } from '../services/api.js'
+import Button from '../components/Button.jsx'
+import FormField from '../components/FormField.jsx'
+import { useToast } from '../components/ToastProvider.jsx'
 import { useNavigate } from 'react-router-dom'
 
 export default function Checkout(){
@@ -7,20 +10,29 @@ export default function Checkout(){
   const [profile, setProfile] = useState(null)
   const [address, setAddress] = useState('')
   const [result, setResult] = useState(null)
+  const [placing, setPlacing] = useState(false)
+  const { notify } = useToast()
+  const [addrErr, setAddrErr] = useState('')
   const nav = useNavigate()
 
   useEffect(()=>{(async()=>{
     const [{data:cartData},{data:me}] = await Promise.all([cartApi.get(), userApi.me()])
     setCart(cartData); setProfile(me); setAddress(me.shippingAddress)
+    if(!me.shippingAddress) setAddrErr('Direccion requerida')
   })()},[])
 
   const confirm = async ()=>{
+    if(!address){ setAddrErr('Direccion requerida'); return }
     const payload = { overrideShippingAddress: address, items: cart.items.map(i=>({
       productId:i.productId, productName:i.productName, imageUrl:i.imageUrl, price:i.price, quantity:i.quantity
     })) }
+    setPlacing(true)
     const { data } = await orderApi.confirm(payload)
     await cartApi.clear()
+    window.dispatchEvent(new Event('cart-updated'))
     setResult(data)
+    setPlacing(false)
+    notify('Pedido confirmado', 'success')
   }
 
   if (result) return (
@@ -37,10 +49,9 @@ export default function Checkout(){
     <div>
       <h2>Confirmar pedido</h2>
       {profile && (
-        <div className="field">
-          <label>Direccion de envio</label>
-          <textarea value={address} onChange={e=>setAddress(e.target.value)} />
-        </div>
+        <FormField label="Direccion de envio" error={addrErr}>
+          <textarea value={address} onChange={e=>{ const v=e.target.value; setAddress(v); setAddrErr(v? '':'Direccion requerida') }} onBlur={()=>{ if(!address) setAddrErr('Direccion requerida') }} />
+        </FormField>
       )}
       <h3>Resumen</h3>
       {cart.items?.map(i=> (
@@ -50,7 +61,7 @@ export default function Checkout(){
         </div>
       ))}
       <h3>Total: ${total.toFixed(2)}</h3>
-      <button className="btn" onClick={confirm} disabled={!cart.items?.length}>Confirmar</button>
+      <Button onClick={confirm} loading={placing} disabled={!cart.items?.length}>Confirmar</Button>
     </div>
   )
 }

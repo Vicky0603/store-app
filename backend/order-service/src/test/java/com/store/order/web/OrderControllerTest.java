@@ -16,7 +16,11 @@ public class OrderControllerTest {
     void confirmComputesTotal_andListByUser() {
         var repo = mock(OrderRepository.class);
         var controller = new OrderController(repo);
-        var principal = new org.springframework.security.core.userdetails.User("o@example.com","x", java.util.List.of());
+        String email = "o@example.com";
+        var jwt = new org.springframework.security.oauth2.jwt.Jwt(
+                "token", java.time.Instant.now(), java.time.Instant.now().plusSeconds(3600),
+                java.util.Map.of("alg","HS256"), java.util.Map.of("sub", email)
+        );
 
         when(repo.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -25,14 +29,13 @@ public class OrderControllerTest {
         it.productId = 1L; it.productName = "Prod"; it.price = new BigDecimal("10.50"); it.quantity = 2; it.imageUrl = "img";
         req.items = List.of(it);
         req.overrideShippingAddress = "Addr";
-        ResponseEntity<?> res = controller.confirm(principal, req);
+        ResponseEntity<?> res = controller.confirm(jwt, req);
         var map = (java.util.Map<?,?>) res.getBody();
         assertEquals(new BigDecimal("21.00"), map.get("total"));
 
         var o = new Order(); o.setUserEmail("o@example.com");
-        when(repo.findByUserEmailOrderByCreatedAtDesc("o@example.com")).thenReturn(List.of(o));
-        var list = controller.list(principal);
+        when(repo.findByUserEmailOrderByCreatedAtDesc(email)).thenReturn(List.of(o));
+        var list = controller.list(jwt);
         assertEquals(1, list.size());
     }
 }
-
