@@ -1,0 +1,54 @@
+stages:
+  - test
+  - build
+
+variables:
+  MAVEN_CLI_OPTS: "-q"
+
+cache:
+  paths:
+    - .m2/repository
+
+backend:test:
+  stage: test
+  image: maven:3.9-eclipse-temurin-17
+  script:
+    - mvn $MAVEN_CLI_OPTS -DskipTests=false -f backend/user-service test
+    - mvn $MAVEN_CLI_OPTS -DskipTests=false -f backend/catalog-service test
+    - mvn $MAVEN_CLI_OPTS -DskipTests=false -f backend/cart-service test
+    - mvn $MAVEN_CLI_OPTS -DskipTests=false -f backend/order-service test
+    - mvn $MAVEN_CLI_OPTS -DskipTests=false -f backend/ai-service test
+
+backend:build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-17
+  script:
+    - mvn $MAVEN_CLI_OPTS -DskipTests package -f backend/user-service
+    - mvn $MAVEN_CLI_OPTS -DskipTests package -f backend/catalog-service
+    - mvn $MAVEN_CLI_OPTS -DskipTests package -f backend/cart-service
+    - mvn $MAVEN_CLI_OPTS -DskipTests package -f backend/order-service
+    - mvn $MAVEN_CLI_OPTS -DskipTests package -f backend/ai-service
+
+frontend:test:
+  stage: test
+  image: node:18
+  cache:
+    paths:
+      - frontend/node_modules/
+  before_script:
+    - cd frontend
+    - npm ci || npm install
+  script:
+    - npm run lint
+    - npm test -- --run
+
+frontend:build:
+  stage: build
+  image: node:18
+  dependencies:
+    - frontend:test
+  before_script:
+    - cd frontend
+  script:
+    - npm run build
+

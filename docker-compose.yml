@@ -1,0 +1,99 @@
+version: '3.9'
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MYSQL_ROOT_PASSWORD: test1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  user-service:
+    build: ./backend/user-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/user_service
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: test1234
+      SECURITY_JWT_SECRET: ThisIsAStrongJWTSecretWithAtLeast32Chars_2026!
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+
+  catalog-service:
+    build: ./backend/catalog-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/catalog_service
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: test1234
+      SECURITY_JWT_SECRET: ThisIsAStrongJWTSecretWithAtLeast32Chars_2026!
+      SPRING_SQL_INIT_MODE: always
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+
+  cart-service:
+    build: ./backend/cart-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/cart_service
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: test1234
+      SECURITY_JWT_SECRET: ThisIsAStrongJWTSecretWithAtLeast32Chars_2026!
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+
+  order-service:
+    build: ./backend/order-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/order_service
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: test1234
+      SECURITY_JWT_SECRET: ThisIsAStrongJWTSecretWithAtLeast32Chars_2026!
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8084:8084"
+
+  ai-service:
+    build: ./backend/ai-service
+    environment:
+      CATALOG_BASEURL: http://catalog-service:8082
+      APP_CORS_ORIGIN: http://localhost:5173
+    depends_on:
+      - catalog-service
+    ports:
+      - "8085:8085"
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_USER_URL: http://localhost:8081
+      VITE_CATALOG_URL: http://localhost:8082
+      VITE_CART_URL: http://localhost:8083
+      VITE_ORDER_URL: http://localhost:8084
+      VITE_AI_URL: http://localhost:8085
+    depends_on:
+      - user-service
+      - catalog-service
+      - cart-service
+      - order-service
+    ports:
+      - "5173:80"
+
+volumes:
+  db_data:
+
