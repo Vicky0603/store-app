@@ -35,10 +35,10 @@ public class OrderController {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<?> confirm(@AuthenticationPrincipal UserDetails user, @Valid @RequestBody ConfirmRequest req) {
+    public ResponseEntity<?> confirm(@AuthenticationPrincipal(expression = "subject") String email, @Valid @RequestBody ConfirmRequest req) {
         var o = new Order();
         o.setOrderNumber(UUID.randomUUID().toString().substring(0,8).toUpperCase());
-        o.setUserEmail(user.getUsername());
+        o.setUserEmail(email);
         o.setShippingAddress(req.overrideShippingAddress); // si null, frontend debe enviar dirección del perfil
         BigDecimal total = BigDecimal.ZERO;
         for (var it : req.items) {
@@ -58,13 +58,13 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<Order> list(@AuthenticationPrincipal UserDetails user) {
-        return repo.findByUserEmailOrderByCreatedAtDesc(user.getUsername());
+    public List<Order> list(@AuthenticationPrincipal(expression = "subject") String email) {
+        return repo.findByUserEmailOrderByCreatedAtDesc(email);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> get(@AuthenticationPrincipal UserDetails user, @PathVariable Long id) {
-        return repo.findById(id).filter(o -> o.getUserEmail().equals(user.getUsername()))
+    public ResponseEntity<Order> get(@AuthenticationPrincipal(expression = "subject") String email, @PathVariable Long id) {
+        return repo.findById(id).filter(o -> o.getUserEmail().equals(email))
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

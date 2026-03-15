@@ -22,7 +22,7 @@ public class UserService {
 
     public User register(User u, String rawPassword) {
         if (repo.existsByEmail(u.getEmail())) throw new IllegalArgumentException("Email ya registrado");
-        if (!isAdult(u.getDateOfBirth())) throw new IllegalArgumentException("Debe ser mayor de 18 años");
+        if (!isAdult(u.getDateOfBirth())) throw new IllegalArgumentException("Debe ser mayor de 18 anios");
         u.setPasswordHash(encoder.encode(rawPassword));
         return repo.save(u);
     }
@@ -58,4 +58,3 @@ public class UserService {
         return Period.between(dob, LocalDate.now()).getYears() >= 18;
     }
 }
-

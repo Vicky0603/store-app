@@ -21,7 +21,7 @@ export default function PasswordReset(){
 
   return (
     <div>
-      <h2>Recuperar contraseña</h2>
+      <h2>Recuperar contrasena</h2>
       {step === 'init' && (
         <form onSubmit={init} style={{maxWidth:400}}>
           <div className="field"><label>Email</label><input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></div>
@@ -33,7 +33,7 @@ export default function PasswordReset(){
       {step === 'complete' && (
         <form onSubmit={complete} style={{maxWidth:400}}>
           <div className="field"><label>Token (demo)</label><input value={token} onChange={e=>setToken(e.target.value)} required/></div>
-          <div className="field"><label>Nueva contraseña</label><input type="password" value={newPassword} onChange={e=>setNewPassword(e.target.value)} required/></div>
+          <div className="field"><label>Nueva contrasena</label><input type="password" value={newPassword} onChange={e=>setNewPassword(e.target.value)} required/></div>
           {error && <p style={{color:'crimson'}}>{error}</p>}
           {msg && <p style={{color:'green'}}>{msg}</p>}
           <button className="btn">Cambiar contraseña</button>
@@ -42,4 +42,3 @@ export default function PasswordReset(){
     </div>
   )
 }
-

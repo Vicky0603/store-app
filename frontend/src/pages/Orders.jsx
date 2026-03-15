@@ -7,7 +7,7 @@ export default function Orders(){
   useEffect(()=>{ load() }, [])
   return (
     <div>
-      <h2>Mis órdenes</h2>
+      <h2>Mis ordenes</h2>
       {list.map(o=> (
         <div key={o.id} className="card" style={{padding:'.75rem'}}>
           <div className="row" style={{justifyContent:'space-between'}}>
@@ -21,8 +21,7 @@ export default function Orders(){
           <strong>Total: ${Number(o.total).toFixed(2)}</strong>
         </div>
       ))}
-      {!list.length && <p>No hay órdenes aún.</p>}
+      {!list.length && <p>No hay ordenes aun.</p>}
     </div>
   )
 }
-

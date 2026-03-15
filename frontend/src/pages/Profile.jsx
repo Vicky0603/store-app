@@ -16,11 +16,10 @@ export default function Profile(){
         <div className="field" style={{flex:1}}><label>Nombres</label><input value={profile.firstName} onChange={e=>setProfile({...profile, firstName:e.target.value})}/></div>
         <div className="field" style={{flex:1}}><label>Apellidos</label><input value={profile.lastName} onChange={e=>setProfile({...profile, lastName:e.target.value})}/></div>
       </div>
-      <div className="field"><label>Dirección de envío</label><textarea value={profile.shippingAddress} onChange={e=>setProfile({...profile, shippingAddress:e.target.value})}/></div>
+      <div className="field"><label>Direccion de envio</label><textarea value={profile.shippingAddress} onChange={e=>setProfile({...profile, shippingAddress:e.target.value})}/></div>
       <div className="field"><label>Email</label><input disabled value={profile.email}/></div>
       <button className="btn" onClick={save}>Guardar</button>
       {ok && <p style={{color:'green'}}>{ok}</p>}
     </div>
   )
 }
-

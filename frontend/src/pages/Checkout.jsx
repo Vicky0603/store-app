@@ -26,7 +26,7 @@ export default function Checkout(){
   if (result) return (
     <div>
       <h2>Pedido confirmado</h2>
-      <p>Número de orden: <strong>{result.orderNumber}</strong></p>
+      <p>Numero de orden: <strong>{result.orderNumber}</strong></p>
       <p>Total: ${Number(result.total).toFixed(2)}</p>
       <button className="btn" onClick={()=> nav('/orders')}>Ver mis órdenes</button>
     </div>
@@ -38,7 +38,7 @@ export default function Checkout(){
       <h2>Confirmar pedido</h2>
       {profile && (
         <div className="field">
-          <label>Dirección de envío</label>
+          <label>Direccion de envio</label>
           <textarea value={address} onChange={e=>setAddress(e.target.value)} />
         </div>
       )}
@@ -54,4 +54,3 @@ export default function Checkout(){
     </div>
   )
 }
-

@@ -21,9 +21,8 @@ export default function Cart(){
           <input style={{width:70}} type="number" min="1" value={i.quantity} onChange={e=>updateQty(i.id, Number(e.target.value))}/>
           <button className="btn" onClick={()=>remove(i.id)}>Eliminar</button>
         </div>
-      )) : <p>Tu carrito está vacío</p>}
+      )) : <p>Tu carrito esta vacio</p>}
       <h3>Total: ${total.toFixed(2)}</h3>
     </div>
   )
 }
-

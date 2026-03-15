@@ -19,7 +19,7 @@ export default function Catalog(){
         <input placeholder="Buscar" value={q} onChange={e=>setQ(e.target.value)} style={{flex:1,padding:'.5rem'}}/>
         <button className="btn">Buscar</button>
       </form>
-      {loading && <p>Cargando catálogo...</p>}
+      {loading && <p>Cargando catalogo...</p>}
       <div className="grid">
         {list.map(p=> (
           <div className="card" key={p.id}>

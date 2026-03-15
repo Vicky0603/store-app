@@ -12,7 +12,7 @@ export default function Navbar({ authed, onLogout }) {
       <div className="spacer" />
       {authed ? (
         <>
-          <Link to="/orders">Órdenes</Link>
+          <Link to="/orders">Ordenes</Link>
           <Link to="/profile">Perfil</Link>
           <button className="btn" onClick={onLogout}>Salir</button>
         </>
