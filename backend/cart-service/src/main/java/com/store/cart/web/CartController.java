@@ -6,7 +6,7 @@ import com.store.cart.repo.CartRepository;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -25,15 +25,15 @@ public class CartController {
     }
 
     @GetMapping
-    public Cart getCart(@AuthenticationPrincipal(expression = "subject") String email) {
-        return getOrCreate(email);
+    public Cart getCart(@AuthenticationPrincipal Jwt jwt) {
+        return getOrCreate(jwt.getSubject());
     }
 
     public record AddItemRequest(Long productId, String productName, String imageUrl, BigDecimal price, @Min(1) Integer quantity){}
 
     @PostMapping("/items")
-    public Cart addItem(@AuthenticationPrincipal(expression = "subject") String email, @RequestBody AddItemRequest req) {
-        Cart cart = getOrCreate(email);
+    public Cart addItem(@AuthenticationPrincipal Jwt jwt, @RequestBody AddItemRequest req) {
+        Cart cart = getOrCreate(jwt.getSubject());
         // si ya existe el producto en el carrito, sumar cantidad
         var existing = cart.getItems().stream().filter(i -> i.getProductId().equals(req.productId())).findFirst();
         if (existing.isPresent()) {
@@ -53,8 +53,8 @@ public class CartController {
     }
 
     @PutMapping("/items/{itemId}")
-    public ResponseEntity<Cart> updateQty(@AuthenticationPrincipal(expression = "subject") String email, @PathVariable Long itemId, @RequestBody Map<String, Integer> body) {
-        Cart cart = getOrCreate(email);
+    public ResponseEntity<Cart> updateQty(@AuthenticationPrincipal Jwt jwt, @PathVariable Long itemId, @RequestBody Map<String, Integer> body) {
+        Cart cart = getOrCreate(jwt.getSubject());
         var opt = cart.getItems().stream().filter(i -> i.getId().equals(itemId)).findFirst();
         if (opt.isEmpty()) return ResponseEntity.notFound().build();
         var item = opt.get();
@@ -64,8 +64,8 @@ public class CartController {
     }
 
     @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<?> remove(@AuthenticationPrincipal(expression = "subject") String email, @PathVariable Long itemId) {
-        Cart cart = getOrCreate(email);
+    public ResponseEntity<?> remove(@AuthenticationPrincipal Jwt jwt, @PathVariable Long itemId) {
+        Cart cart = getOrCreate(jwt.getSubject());
         boolean removed = cart.getItems().removeIf(i -> i.getId().equals(itemId));
         if (!removed) return ResponseEntity.notFound().build();
         repo.save(cart);
@@ -73,8 +73,8 @@ public class CartController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> clear(@AuthenticationPrincipal(expression = "subject") String email) {
-        Cart cart = getOrCreate(email);
+    public ResponseEntity<?> clear(@AuthenticationPrincipal Jwt jwt) {
+        Cart cart = getOrCreate(jwt.getSubject());
         cart.getItems().clear();
         repo.save(cart);
         return ResponseEntity.noContent().build();

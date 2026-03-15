@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -35,10 +35,10 @@ public class OrderController {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<?> confirm(@AuthenticationPrincipal(expression = "subject") String email, @Valid @RequestBody ConfirmRequest req) {
+    public ResponseEntity<?> confirm(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody ConfirmRequest req) {
         var o = new Order();
         o.setOrderNumber(UUID.randomUUID().toString().substring(0,8).toUpperCase());
-        o.setUserEmail(email);
+        o.setUserEmail(jwt.getSubject());
         o.setShippingAddress(req.overrideShippingAddress); // si null, frontend debe enviar dirección del perfil
         BigDecimal total = BigDecimal.ZERO;
         for (var it : req.items) {
@@ -58,13 +58,13 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<Order> list(@AuthenticationPrincipal(expression = "subject") String email) {
-        return repo.findByUserEmailOrderByCreatedAtDesc(email);
+    public List<Order> list(@AuthenticationPrincipal Jwt jwt) {
+        return repo.findByUserEmailOrderByCreatedAtDesc(jwt.getSubject());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> get(@AuthenticationPrincipal(expression = "subject") String email, @PathVariable Long id) {
-        return repo.findById(id).filter(o -> o.getUserEmail().equals(email))
+    public ResponseEntity<Order> get(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        return repo.findById(id).filter(o -> o.getUserEmail().equals(jwt.getSubject()))
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

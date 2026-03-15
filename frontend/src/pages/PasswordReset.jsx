@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { userApi } from '../services/api.js'
+import { useToast } from '../components/ToastProvider.jsx'
 
 export default function PasswordReset(){
   const [step, setStep] = useState('init') // init | complete
@@ -7,16 +8,17 @@ export default function PasswordReset(){
   const [token, setToken] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [msg, setMsg] = useState('')
+  const { notify } = useToast()
   const [error, setError] = useState('')
 
   const init = async (e)=>{
     e.preventDefault(); setMsg(''); setError('')
-    try{ const {data} = await userApi.resetInit({ email }); setMsg('Token generado. Revisa tu email. (Demo: token abajo)'); setToken(data.resetToken); setStep('complete') }catch{ setError('No se pudo iniciar el reset') }
+    try{ const {data} = await userApi.resetInit({ email }); setMsg('Token generado. Revisa tu email. (Demo: token abajo)'); setToken(data.resetToken); setStep('complete'); notify('Enviamos un enlace a tu email (demo: token visible)', 'info') }catch{ setError('No se pudo iniciar el reset') }
   }
 
   const complete = async (e)=>{
     e.preventDefault(); setMsg(''); setError('')
-    try{ await userApi.resetComplete({ token, newPassword }); setMsg('Contraseña actualizada. Ya puedes iniciar sesión.') }catch{ setError('No se pudo completar el reset') }
+    try{ await userApi.resetComplete({ token, newPassword }); setMsg('Contrasena actualizada. Ya puedes iniciar sesion.'); notify('Contrasena actualizada', 'success') }catch{ setError('No se pudo completar el reset') }
   }
 
   return (

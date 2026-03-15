@@ -15,6 +15,8 @@ export default function App() {
   useEffect(() => {
     if (token) localStorage.setItem('token', token)
     else localStorage.removeItem('token')
+    // notify contexts about auth change
+    window.dispatchEvent(new Event('auth-changed'))
   }, [token])
 
   return (
@@ -25,7 +27,7 @@ export default function App() {
           <Route path="/" element={<Catalog />} />
           <Route path="/login" element={<Login onLogin={setToken} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/cart" element={<RequireAuth authed={!!token}><Cart /></RequireAuth>} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<RequireAuth authed={!!token}><Checkout /></RequireAuth>} />
           <Route path="/orders" element={<RequireAuth authed={!!token}><Orders /></RequireAuth>} />
           <Route path="/profile" element={<RequireAuth authed={!!token}><Profile /></RequireAuth>} />

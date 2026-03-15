@@ -42,8 +42,37 @@ Cómo ejecutar (resumen):
 Ramas:
 - Cree la rama `APP-{Nombre}` y empuje el código a un repositorio GitLab público para la demo.
 
-<img width="1913" height="787" alt="image" src="https://github.com/user-attachments/assets/8c32a636-429d-499f-9a14-822d5226b559" />
-<img width="1490" height="877" alt="image" src="https://github.com/user-attachments/assets/92f4bf3c-1080-4962-bc34-e4916e7c3145" />
+**Mejoras y Detalles Implementados**
+- Backend robusto
+  - Seguridad JWT: `user-service` emite tokens; `catalog/cart/order` validan con OAuth2 Resource Server (NimbusJwtDecoder) y CORS habilitado.
+  - Java 17: configuración del compilador y plugin de Spring Boot fijados en todos los servicios.
+  - Manejo de errores: `@ControllerAdvice` con respuestas 400 legibles y validaciones por `jakarta.validation`.
+  - Cart/Order leen el sujeto del JWT (email) de forma nativa (`@AuthenticationPrincipal Jwt`).
+  - Catálogo con imágenes deportivas reales (Unsplash) y datos semilla ampliados.
+- Pruebas unitarias
+  - Lógica de registro/validaciones, búsqueda de catálogo, carrito (agregar/actualizar/eliminar) y confirmación de orden.
+  - Ubicación: `backend/*-service/src/test/...`
+- Frontend profesional y responsive
+  - Design system ligero: `Button`, `FormField`, `Spinner` y variables CSS.
+  - Toaster global (`ToastProvider`) con tipos: success/error/info/warn.
+  - Validaciones en cliente: registro (email, contraseña, 18+), login (email requerido), perfil (requeridos), checkout (dirección requerida).
+  - Carga agradable: skeleton loaders en Catálogo y Órdenes.
+  - Experiencia de carrito
+    - `CartContext`: estado centralizado del carrito con métodos `load/addItem/updateQty/removeItem/clear`.
+    - Conteo en Navbar con badge; feedback "Agregado" y toasts.
+    - Carrito invitado (guest): persiste en `localStorage` sin autenticación y se fusiona al iniciar sesión.
+    - Auto-sync en login/logout (evento `auth-changed`).
+  - Catálogo
+    - Búsqueda con debounce y botón limpiar (X).
+    - Botón deshabilitado cuando el producto está agotado.
+  - Modo oscuro: toggle en Navbar con persistencia.
 
+**Endpoints principales (resumen)**
+- User: `/api/auth/register|login|password/reset/*`, `/api/profile` (GET/PUT)
+- Catalog: `/api/products[?q=]`, CRUD protegido para administración
+- Cart: `/api/cart`, `/api/cart/items` (POST/PUT/DELETE)
+- Order: `/api/orders/confirm`, `/api/orders`, `/api/orders/{id}`
 
-
+**Notas de ejecución (Windows PowerShell)**
+- Si usa MySQL local: cree BDs con `db/create_dbs.sql` (ver instrucciones en secciones anteriores). Ajuste `spring.datasource.*` y `security.jwt.secret`.
+- Si aparece error CORS: verifique que el origen sea `http://localhost:5173` y reinicie servicios tras cambios.
