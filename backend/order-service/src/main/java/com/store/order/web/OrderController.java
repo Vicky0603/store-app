@@ -54,7 +54,11 @@ public class OrderController {
         }
         o.setTotal(total);
         var saved = repo.save(o);
-        return ResponseEntity.ok(Map.of("orderId", saved.getId(), "orderNumber", saved.getOrderNumber(), "total", saved.getTotal()));
+        var payload = new java.util.HashMap<String,Object>();
+        if (saved.getId() != null) payload.put("orderId", saved.getId());
+        payload.put("orderNumber", saved.getOrderNumber());
+        payload.put("total", saved.getTotal());
+        return ResponseEntity.ok(payload);
     }
 
     @GetMapping
