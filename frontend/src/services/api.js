@@ -48,7 +48,8 @@ export const userApi = {
 
 export const catalogApi = {
   list: (q) => axios.get(import.meta.env.VITE_CATALOG_URL + '/api/products' + (q ? `?q=${encodeURIComponent(q)}` : '')),
-  get: (id) => axios.get(import.meta.env.VITE_CATALOG_URL + `/api/products/${id}`)
+  get: (id) => axios.get(import.meta.env.VITE_CATALOG_URL + `/api/products/${id}`),
+  related: (id, limit=3) => axios.get(import.meta.env.VITE_CATALOG_URL + `/api/products/${id}/related?limit=${limit}`)
 }
 
 export const cartApi = {
@@ -63,6 +64,11 @@ export const orderApi = {
   confirm: (payload) => axios.post(import.meta.env.VITE_ORDER_URL + '/api/orders/confirm', payload, { headers: authHeaders() }),
   list: () => axios.get(import.meta.env.VITE_ORDER_URL + '/api/orders', { headers: authHeaders() }),
   get: (id) => axios.get(import.meta.env.VITE_ORDER_URL + `/api/orders/${id}`, { headers: authHeaders() })
+}
+
+export const aiApi = {
+  semanticSearch: (q) => axios.get((import.meta.env.VITE_AI_URL || 'http://localhost:8085') + `/api/ai/semantic/search?q=${encodeURIComponent(q)}`),
+  chat: (question) => axios.post((import.meta.env.VITE_AI_URL || 'http://localhost:8085') + '/api/ai/chat', { question })
 }
 
 export default api

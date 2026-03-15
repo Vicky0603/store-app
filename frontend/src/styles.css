@@ -46,9 +46,9 @@ body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(-
 .toast.warn{background:var(--warn)}
 .drawer{position:fixed;inset:0;pointer-events:none}
 .drawer.open{pointer-events:auto}
-.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.35);opacity:0;transition:opacity .2s ease;}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.35);opacity:0;transition:opacity .2s ease;z-index:105}
 .drawer.open .drawer-backdrop{opacity:1}
-.drawer-panel{position:absolute;top:0;right:-380px;width:360px;max-width:90%;height:100%;background:var(--card);border-left:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;transition:right .25s ease}
+.drawer-panel{position:absolute;top:0;right:-380px;width:360px;max-width:90%;height:100%;background:var(--card);border-left:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;transition:right .25s ease;z-index:110}
 .drawer.open .drawer-panel{right:0}
 .drawer-header{display:flex;justify-content:space-between;align-items:center;padding:.75rem;border-bottom:1px solid var(--border)}
 .drawer-body{padding:.75rem;flex:1;overflow:auto;display:flex;flex-direction:column;gap:.5rem}
