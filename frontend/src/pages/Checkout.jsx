@@ -40,7 +40,7 @@ export default function Checkout(){
       <h2>Pedido confirmado</h2>
       <p>Numero de orden: <strong>{result.orderNumber}</strong></p>
       <p>Total: ${Number(result.total).toFixed(2)}</p>
-      <button className="btn" onClick={()=> nav('/orders')}>Ver mis órdenes</button>
+      <button className="btn" onClick={()=> { window.dispatchEvent(new Event('order-confirmed')); nav('/orders?t=' + Date.now()) }}>Ver mis ordenes</button>
     </div>
   )
 

@@ -14,7 +14,7 @@ export default function Catalog(){
   const cart = useCart()
   const load = async (query = q)=>{ setLoading(true); const {data}= await catalogApi.list(query); setList(data); setLoading(false) }
   useEffect(()=>{ load() }, [])
-  // debounce search on q change
+  /** debounce search on q change */
   useEffect(()=>{
     const t = setTimeout(()=>{ load(q) }, 400)
     return ()=> clearTimeout(t)
@@ -27,6 +27,7 @@ export default function Catalog(){
       setAdded(prev=> ({...prev, [p.id]: true}))
       setTimeout(()=> setAdded(prev=> ({...prev, [p.id]: false})), 1200)
       notify('Producto agregado al carrito', 'success')
+      window.dispatchEvent(new Event('toggle-mini-cart'))
     } catch {
       notify('Requiere login para agregar al carrito', 'error')
     }
@@ -61,7 +62,7 @@ export default function Catalog(){
               <small>Disponible: {p.quantity}</small>
               <div className="row" style={{alignItems:'center', justifyContent:'space-between'}}>
                 <span>{money(p.price)}</span>
-                <button className="btn" disabled={p.quantity<=0} onClick={()=>add(p)}>{p.quantity>0? (added[p.id]? 'Agregado':'Agregar'):'Agotado'}</button>
+                <button className={`btn ${added[p.id] ? 'success pulse' : ''}`} disabled={p.quantity<=0} onClick={()=>add(p)}>{p.quantity>0? (added[p.id]? 'Agregado':'Agregar'):'Agotado'}</button>
               </div>
             </div>
           </div>

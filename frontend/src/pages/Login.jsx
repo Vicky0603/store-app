@@ -21,7 +21,7 @@ export default function Login({ onLogin }) {
   const submit = async (e) => {
     e.preventDefault()
     setError('')
-    // client-side validation
+    /** client-side validation */
     const fe = {}
     if(!isEmail(email)) fe.email = 'Email invalido'
     if(!password) fe.password = 'Requerido'
@@ -45,12 +45,12 @@ export default function Login({ onLogin }) {
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={submit} style={{maxWidth:420}}>
+      <form onSubmit={submit} style={{maxWidth:420}} autoComplete="off">
         <FormField label="Email" error={fieldErrors.email}>
-          <input type="email" value={email} onChange={e=>{ setEmail(e.target.value); if(fieldErrors.email) setFieldErrors(prev=> ({...prev, email: isEmail(e.target.value)? '':'Email invalido'})) }} required/>
+          <input type="email" name="user_email" autoComplete="email" value={email} onChange={e=>{ setEmail(e.target.value); if(fieldErrors.email) setFieldErrors(prev=> ({...prev, email: isEmail(e.target.value)? '':'Email invalido'})) }} required/>
         </FormField>
         <FormField label="Contrasena" error={fieldErrors.password}>
-          <input type="password" value={password} onChange={e=>{ setPassword(e.target.value); if(fieldErrors.password) setFieldErrors(prev=> ({...prev, password: e.target.value? '':'Requerido'})) }} required/>
+          <input type="password" name="user_password" autoComplete="new-password" data-lpignore="true" data-1p-ignore="true" value={password} onChange={e=>{ setPassword(e.target.value); if(fieldErrors.password) setFieldErrors(prev=> ({...prev, password: e.target.value? '':'Requerido'})) }} required/>
         </FormField>
         {error && <p className="error">{error}</p>}
         <Button loading={loading}>Entrar</Button>

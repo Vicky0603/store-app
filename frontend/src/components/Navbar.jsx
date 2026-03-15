@@ -22,7 +22,9 @@ export default function Navbar({ authed, onLogout }) {
   return (
     <nav className="nav">
       <Link className="brand" to="/">Tienda</Link>
-      <Link to="/cart">Carrito {count? <span className="badge">{count}</span>: null}</Link>
+      <button className="btn secondary" onClick={()=> window.dispatchEvent(new Event('toggle-mini-cart'))}>
+        Carrito {count? <span className="badge">{count}</span>: null}
+      </button>
       <div className="spacer" />
       <button className="btn secondary" onClick={()=> setTheme(prev => prev==='dark'?'light':'dark')}>
         {theme==='dark' ? 'Modo claro' : 'Modo oscuro'}

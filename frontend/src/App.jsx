@@ -15,7 +15,6 @@ export default function App() {
   useEffect(() => {
     if (token) localStorage.setItem('token', token)
     else localStorage.removeItem('token')
-    // notify contexts about auth change
     window.dispatchEvent(new Event('auth-changed'))
   }, [token])
 

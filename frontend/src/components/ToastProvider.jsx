@@ -29,3 +29,19 @@ export default function ToastProvider({ children }){
   )
 }
 
+/** Listen for global error events to display as toasts */
+if (typeof window !== 'undefined'){
+  window.addEventListener('app-error', (e)=>{
+    const d = e?.detail
+    const msg = d?.message || 'Ocurrio un error'
+    /** We cannot call hooks here; instead, create a lightweight toast element. */
+    try{
+      const el = document.createElement('div')
+      el.className = 'toast error'
+      el.textContent = msg
+      const wrap = document.querySelector('.toasts') || document.body.appendChild(Object.assign(document.createElement('div'),{className:'toasts'}))
+      wrap.appendChild(el)
+      setTimeout(()=>{ try{ wrap.removeChild(el) }catch{} }, 2500)
+    }catch{}
+  })
+}

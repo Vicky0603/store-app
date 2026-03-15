@@ -43,7 +43,7 @@ export default function CartProvider({ children }){
 
   const addItem = useCallback(async (payload)=>{
     if(!hasToken()){
-      // merge by productId
+      /** merge by productId */
       setItems(prev => {
         const arr = prev.length? [...prev] : readGuest()
         const idx = arr.findIndex(i => i.productId === payload.productId)
@@ -92,7 +92,7 @@ export default function CartProvider({ children }){
   useEffect(()=>{ /* eager load and auth sync */
     const handler = async ()=>{
       if(hasToken()){
-        // merge guest into server
+        /** merge guest into server */
         const guest = readGuest()
         for(const g of guest){ try{ await cartApi.add(g) }catch{} }
         writeGuest([])
@@ -101,7 +101,7 @@ export default function CartProvider({ children }){
     }
     window.addEventListener('auth-changed', handler)
     window.addEventListener('storage', (e)=>{ if(e.key==='token') handler() })
-    // initial load
+    /** initial load */
     handler()
     return ()=> window.removeEventListener('auth-changed', handler)
   }, [load])

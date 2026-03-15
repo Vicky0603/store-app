@@ -1,5 +1,6 @@
 package com.store.cart.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -9,6 +10,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JsonIgnore
     private Cart cart;
     private Long productId;
     private String productName;
@@ -31,4 +33,3 @@ public class CartItem {
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
 }
-

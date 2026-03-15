@@ -1,5 +1,35 @@
 import axios from 'axios'
 
+/** Global axios configuration and interceptors for defensive error handling */
+axios.interceptors.request.use((config)=>{
+  try{
+    const t = localStorage.getItem('token')
+    if(t && !config.headers?.Authorization){
+      config.headers = config.headers || {}
+      config.headers.Authorization = `Bearer ${t}`
+    }
+  }catch{}
+  return config
+})
+
+axios.interceptors.response.use(
+  (res)=> res,
+  (err)=>{
+    try{
+      const status = err?.response?.status
+      const message = err?.response?.data?.error || err?.message || 'Error'
+      const detail = err?.response?.data?.errors ? JSON.stringify(err.response.data.errors) : ''
+      const evt = new CustomEvent('app-error', { detail: { status, message, extra: detail } })
+      window.dispatchEvent(evt)
+      if(status === 401){
+        localStorage.removeItem('token')
+        window.dispatchEvent(new Event('auth-changed'))
+      }
+    }catch{}
+    return Promise.reject(err)
+  }
+)
+
 const api = axios.create({ baseURL: import.meta.env.VITE_API_GATEWAY || '' })
 
 export function authHeaders() {
@@ -36,4 +66,3 @@ export const orderApi = {
 }
 
 export default api
-
