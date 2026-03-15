@@ -1,0 +1,7 @@
+com\store\catalog\model\Product.class
+com\store\catalog\repo\ProductRepository.class
+com\store\catalog\security\SecurityConfig.class
+com\store\catalog\CatalogServiceApplication.class
+com\store\catalog\web\GlobalExceptionHandler.class
+com\store\catalog\security\CorsConfig.class
+com\store\catalog\web\ProductController.class
