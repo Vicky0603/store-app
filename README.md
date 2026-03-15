@@ -33,6 +33,7 @@ Cómo ejecutar (resumen):
    - `cd backend/catalog-service && mvn spring-boot:run`
    - `cd backend/cart-service && mvn spring-boot:run`
    - `cd backend/order-service && mvn spring-boot:run`
+   - (Opcional IA) `cd backend/ai-service && mvn spring-boot:run`
 3) Frontend:
    - `cd frontend`
    - Copiar `.env.example` a `.env` y ajustar URLs si es necesario
@@ -49,6 +50,12 @@ Ramas:
   - Manejo de errores: `@ControllerAdvice` con respuestas 400 legibles y validaciones por `jakarta.validation`.
   - Cart/Order leen el sujeto del JWT (email) de forma nativa (`@AuthenticationPrincipal Jwt`).
   - Catálogo con imágenes deportivas reales (Unsplash) y datos semilla ampliados.
+- Capa IA / Recomendaciones
+  - `ai-service` (8085): servicio auxiliar para búsqueda semántica básica y asistente de productos (chat) sin dependencias externas (tokenización + similitud coseno).
+  - Endpoints:
+    - `GET /api/ai/semantic/search?q=` → productos ordenados por similitud a la consulta.
+    - `POST /api/ai/chat { question }` → respuesta breve + productos sugeridos.
+  - Recomendaciones relacionadas por producto en `catalog-service`: `GET /api/products/{id}/related?limit=3`.
 - Pruebas unitarias
   - Lógica de registro/validaciones, búsqueda de catálogo, carrito (agregar/actualizar/eliminar) y confirmación de orden.
   - Ubicación: `backend/*-service/src/test/...`
@@ -62,6 +69,15 @@ Ramas:
     - Conteo en Navbar con badge; feedback "Agregado" y toasts.
     - Carrito invitado (guest): persiste en `localStorage` sin autenticación y se fusiona al iniciar sesión.
     - Auto-sync en login/logout (evento `auth-changed`).
+  - Mini cart (cajón lateral)
+    - Abre al pulsar "Carrito" o al agregar un producto, con imágenes, +/- de cantidad, eliminar, subtotal, envío estimado y total.
+    - CTA "Seguir comprando" e "Ir a Checkout".
+  - Mejoras de usabilidad
+    - Búsqueda con debounce y botón limpiar (X) en el catálogo.
+    - Modo oscuro con persistencia.
+    - Animación en botón "Agregar".
+  - Asistente (chat) en UI
+    - Widget flotante para preguntar por productos; consume `ai-service` (`/api/ai/chat`).
   - Catálogo
     - Búsqueda con debounce y botón limpiar (X).
     - Botón deshabilitado cuando el producto está agotado.
@@ -72,7 +88,11 @@ Ramas:
 - Catalog: `/api/products[?q=]`, CRUD protegido para administración
 - Cart: `/api/cart`, `/api/cart/items` (POST/PUT/DELETE)
 - Order: `/api/orders/confirm`, `/api/orders`, `/api/orders/{id}`
+- AI: `/api/ai/semantic/search?q=`, `/api/ai/chat` (ai-service)
 
 **Notas de ejecución (Windows PowerShell)**
 - Si usa MySQL local: cree BDs con `db/create_dbs.sql` (ver instrucciones en secciones anteriores). Ajuste `spring.datasource.*` y `security.jwt.secret`.
 - Si aparece error CORS: verifique que el origen sea `http://localhost:5173` y reinicie servicios tras cambios.
+- Para IA (opcional):
+  - Levantar `ai-service` en 8085 y, si desea, definir `VITE_AI_URL=http://localhost:8085` en `frontend/.env`.
+  - El chat en UI aparecerá como botón flotante "Asistente" en la esquina inferior.
